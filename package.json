@@ -10,6 +10,11 @@
       "types": "./lib/typescript/src/index.d.ts",
       "default": "./lib/module/index.js"
     },
+    "./codecs": {
+      "source": "./src/codecs/index.ts",
+      "types": "./lib/typescript/src/codecs/index.d.ts",
+      "default": "./lib/module/codecs/index.js"
+    },
     "./package.json": "./package.json"
   },
   "files": [
