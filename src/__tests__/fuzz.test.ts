@@ -38,11 +38,20 @@ jest.mock('react-native-nitro-modules', () => ({
   },
 }));
 
+// Simple seeded PRNG for reproducible tests
+const createSeededRandom = (seed: number) => {
+  return () => {
+    seed = (seed * 1103515245 + 12345) & 0x7fffffff;
+    return (seed / 0x7fffffff);
+  };
+};
+
 describe('Fuzz Tests', () => {
-  const generateRandomBytes = (size: number): Uint8Array => {
+  const generateRandomBytes = (size: number, seed: number = 12345): Uint8Array => {
+    const random = createSeededRandom(seed);
     const bytes = new Uint8Array(size);
     for (let i = 0; i < size; i++) {
-      bytes[i] = Math.floor(Math.random() * 256);
+      bytes[i] = Math.floor(random() * 256);
     }
     return bytes;
   };
