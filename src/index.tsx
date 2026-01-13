@@ -15,9 +15,9 @@ export function decompress(data: ArrayBuffer): string {
 // Binary-safe API (new)
 export function compressBytes(
   data: ArrayBuffer,
-  compressionLevel: number = 3
+  compressLevel: number = 3
 ): ArrayBuffer {
-  return ZstdHybridObject.compressBytes(data, compressionLevel);
+  return ZstdHybridObject.compressBytes(data, compressLevel);
 }
 
 export function decompressBytes(data: ArrayBuffer): ArrayBuffer {
