@@ -94,6 +94,14 @@ describe('ZstdBinaryCompression', () => {
       const decompressed = codec.decompress(compressed);
       expect(decompressed).toEqual(input);
     });
+
+    it('round-trips empty Uint8Array', () => {
+      const input = new Uint8Array(0);
+      const compressed = codec.compress(input);
+      const decompressed = codec.decompress(compressed);
+      expect(decompressed).toBeInstanceOf(Uint8Array);
+      expect(decompressed.length).toBe(0);
+    });
   });
 
   describe('compression level', () => {
