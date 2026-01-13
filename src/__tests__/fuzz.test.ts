@@ -75,9 +75,10 @@ describe('Fuzz Tests', () => {
 
   describe('multiple iterations', () => {
     it('handles 50 iterations with varying sizes', () => {
+      const sizeRandom = createSeededRandom(98765);
       for (let i = 0; i < 50; i++) {
-        const size = Math.floor(Math.random() * 5000) + 1;
-        const input = generateRandomBytes(size);
+        const size = Math.floor(sizeRandom() * 5000) + 1;
+        const input = generateRandomBytes(size, i);
         const compressed = compressBytes(input.buffer as ArrayBuffer, 3);
         const decompressed = decompressBytes(compressed);
         expect(new Uint8Array(decompressed)).toEqual(input);
@@ -122,10 +123,11 @@ describe('Fuzz Tests', () => {
     });
 
     it('handles mixed null and random bytes', () => {
+      const random = createSeededRandom(54321);
       const input = new Uint8Array(1000);
       for (let i = 0; i < 1000; i++) {
         // 50% chance of null byte
-        input[i] = Math.random() < 0.5 ? 0x00 : Math.floor(Math.random() * 256);
+        input[i] = random() < 0.5 ? 0x00 : Math.floor(random() * 256);
       }
       const compressed = compressBytes(input.buffer, 3);
       const decompressed = decompressBytes(compressed);
