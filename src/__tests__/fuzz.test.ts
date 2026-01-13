@@ -32,6 +32,10 @@ jest.mock('react-native-nitro-modules', () => ({
       decompressBytes: (data: ArrayBuffer) => {
         // Mock binary decompression: remove header
         const input = new Uint8Array(data);
+        // Guard for empty or short buffers
+        if (input.length < 4) {
+          return new ArrayBuffer(0);
+        }
         return input.slice(4).buffer;
       },
     }),
@@ -132,6 +136,28 @@ describe('Fuzz Tests', () => {
       const compressed = compressBytes(input.buffer, 3);
       const decompressed = decompressBytes(compressed);
       expect(new Uint8Array(decompressed)).toEqual(input);
+    });
+
+    it('handles all-zeros buffer', () => {
+      const input = new Uint8Array(1000).fill(0x00);
+      const compressed = compressBytes(input.buffer, 3);
+      const decompressed = decompressBytes(compressed);
+      expect(new Uint8Array(decompressed)).toEqual(input);
+    });
+
+    it('handles all-0xFF buffer', () => {
+      const input = new Uint8Array(1000).fill(0xff);
+      const compressed = compressBytes(input.buffer, 3);
+      const decompressed = decompressBytes(compressed);
+      expect(new Uint8Array(decompressed)).toEqual(input);
+    });
+
+    it('handles empty ArrayBuffer', () => {
+      const input = new ArrayBuffer(0);
+      const compressed = compressBytes(input, 3);
+      const decompressed = decompressBytes(compressed);
+      expect(decompressed).toBeInstanceOf(ArrayBuffer);
+      expect(decompressed.byteLength).toBe(0);
     });
   });
 });
